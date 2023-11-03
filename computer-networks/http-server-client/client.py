@@ -1,6 +1,5 @@
-from socket import *
+import socket
 import sys
-import time
 
 # Command format:
 # client.py address port file
@@ -8,7 +7,7 @@ import time
 serverName = sys.argv[1]
 serverPort = int(sys.argv[2])
 
-clientSocket = socket(AF_INET, SOCK_STREAM)
+clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 clientSocket.connect((serverName, serverPort))
 
 clientSocket.send(("GET /" + sys.argv[3] + " HTTP/1.1\r\n").encode())
