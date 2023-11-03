@@ -1,9 +1,27 @@
-from socket import *
+import socket
 
 serverPort = 6789
 
+def createResponse(filename):
+    try:
+        f = open(filename[1:]) # Throws IOError if file not found
+        print(filename, "found")
+        
+        response = ("HTTP/1.1 200 OK\r\n\r\n" + f.read() + "\r\n").encode()
+        print(filename, "delivered")
+    
+    except IOError:
+        print(filename, "NOT found")
+
+        with open("Error.html") as f:
+            response = ("HTTP/1.1 404 Not found\r\n\r\n" + f.read() + "\r\n").encode()
+
+        print("file not found message delivered")
+    
+    return response
+
 # Create an IPv4 TCP socket
-serverSocket = socket(AF_INET, SOCK_STREAM)
+serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Prepare the sever socket 
 serverSocket.bind(('', serverPort))
@@ -13,33 +31,13 @@ serverSocket.listen(1)
 print("server started...") 
 connectionSocket, addr = serverSocket.accept()
 
-try: 
-    message = connectionSocket.recv(1024).decode()
+# Receive the request, then form and send the response
+message = connectionSocket.recv(1024).decode()
 
-    filename = message.split()[1]
-    f = open(filename[1:]) # Throws IOError if file not found
-    print(filename, "found")
+response = createResponse(message.split()[1])
     
-    # Send the HTTP header into socket
-    connectionSocket.send("HTTP/1.1 200 OK\r\n\r\n".encode())
+connectionSocket.send(response)
 
-    # Send the body to the client (i.e., the contents of the file)
-    connectionSocket.send((f.read() + "\r\n").encode())
-    
-    connectionSocket.close()
-    print(filename, "delivered")
-
-except IOError:
-    print(filename, "NOT found")
-    
-    # Send response message for file not found
-    connectionSocket.send("HTTP/1.1 404 Not found\r\n\r\n".encode())
-
-    with open("Error.html") as f:
-        connectionSocket.send((f.read() + "\r\n").encode())
-             
-    connectionSocket.close()
-    print("file not found message delivered")
-
+connectionSocket.close()
 serverSocket.close()
 print("server closed...") 
