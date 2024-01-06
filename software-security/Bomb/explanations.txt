@@ -1,0 +1,88 @@
+Stage 1:
+    This stage was very simple. I saw that the user input was being compared to a string and a call
+    would be made to explode_bomb if they were not equal. I tracked the code a little bit more to 
+    confirm what I already knew, entered the string, and defused stage 1.
+
+Stage 2:
+    This stage was not easy. After looking at the assembly for a while, I saw some comparisons with
+    the address rbx was pointing to with the contents of eax. Just before that, eax was doubled 
+    with the call, add eax, eax, so I figured it was looking for numbers that doubled. 
+    Unfortunately, something happened: I thought that I had been unsuccessful in doubling starting 
+    from 1, so I ruled out that option.
+    But it wasn't an entirely bad thing, after looking at the assembly more, and with a small hint 
+    from Brooke, I saw that the first number had to be 1. Then using gdb (with the gef extension), 
+    I slowly stepped through the code. I made the realization that it was comparing eax, not rax, 
+    which was big for my understanding - before I had been putting the full 64 bit number into my 
+    guesses. I finally realized it was simply looking for numbers that doubled from 1.
+
+Stage 3:
+    Using ghidra's decompilation abilities was essential to success. It made the switch statement 
+    much easier to follow. Working backwards, I saw that the first number determined which case the 
+    switch statement took, and it had to be 5 or less to avoid blowing up the bomb. I also saw that 
+    after doing all of the addition and subtraction, eax had to be equal to the second number in 
+    the input. After a brief glance at the numbers, I decided to work with case 0 so I wouldn't 
+    have to deal with negative numbers. After doing this math:
+            0x397 - 0x205 + 0xfc - 0x255 + (0x255 - 0x255 + 0x255 - 0x255) = 0x39 = 57,
+    I entered 0 57 for my input and defused stage 3.
+
+Stage 4:
+    Looking at ghidra's dissasembly and decompilation, I quickly saw that the trouble on this stage
+    will be finding out what func4 returns because it is a complicated recursive function. I
+    decided using gdb would be the best way to find out how it works. The first number must be
+    equal to the result of func4, and the second number is passed into the second parameter of
+    func4, with the first being 6:
+        func4(6, input2)
+    So I started gdb, gave it the input 1 4, and ran through the code. The ability to let the
+    the program run through all of the recursions of func4 made life super easy. I saw that the
+    output was 0x50 (80 in decimal), so I changed by first input to 80 and defused the bomb.
+
+Stage 5:
+    This problem uses a self-addressing array when working through the main do-while loop:
+        10, 2, 14, 7, 8, 12, 15, 11, 0, 4, 1, 13, 3, 9, 6, 5
+    The first input is the starting index (idx). With each loop, it is set as:
+        idx = array[idx]
+    Since the array contains [0, 15] in random order, it will always index within itself. Then this
+    number is added to ECX.
+    The first input is the initial index, and it cannot be 15 (0xf). The second input must equal
+    ECX when the loop ends. The loop must run exactly 15 times and exits when idx == 15. The 16th
+    number is 5, so I decided to start at index 5 - that will cause the code to loop 15 times. 
+    Adding 0-15 gives you 120. Since the code will skip 5, my second input is 120 - 5 = 115. The
+    input 5 115 defuses this stage.
+
+Stage 6:
+    A lot went into this stage. Once I modified the decompilation I got from ghidra (changing
+    do-while loops into more familiar for-loops), I was able to better understand what was going on
+    with the decomp. Then I figured out the nodes, were, well, nodes, with pointers to the other
+    nodes by stepping through in gdb and looking at the data in memory. At this point, everything
+    came together.
+    To make it through the first loop, the first 5 of the 6 numbers must be 6 or less and each 
+    number must be unique.
+    The middle two loops add pointers to the nodes to make a linked list, going backwards in 
+    relation to the input (i.e. 1..6 creates 6 -> 5 -> .. -> 2 -> 1 -> null).
+    Finally, to make it through the last for-loop the numbers have to indicate a path through the
+    linked list such that each number is non-increasing.
+
+        Node	1	2	3	4	5	6
+        Value	0xc9	0x37	0x21d	0x288	0x38c	0x328
+
+	Order (G -> L): 5 6 4 3 1 2
+
+    However, since the input sets backwards pointer (the first input is the last node in the linked
+    list), we have to reverse the order for the input. 2 1 3 4 6 5 defuses the bomb.
+
+Secret Stage:
+    Getting into the secret stage wasn't terribly hard. Finding the code wasn't hard. Then I saw
+    that it was called from the phase_defused function. Looking at that function, I saw that it 
+    called sscanf with a format string "%d %d %s". If it returned a 3 (indicated it matched all
+    three patterns), it made sure the string was "DrEvil", and called secret_phase.
+    From there, I assumed I had to add "DrEvil" to one of the inputs that took two numbers. Through
+    a quick quess-and-check, I found that I had to add it to the end of the inputs for stage 4.
+    After looking at the code, I quickly saw fun7 was a complicated recursive function. I briefly
+    tried to trace the execution through but wasn't able to. I decided to "brute force" it (I was
+    planning to stop at 20, which isn't very big), so I was surprised when 20 was the answer!
+    It's Monday, and I might be starting to come down with something, so I'm calling it here.
+
+Resources Used:
+    IDA Pro Free
+    Ghidra
+    gdb + gef
