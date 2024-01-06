@@ -1,0 +1,30 @@
+HW#:           2
+Class/Section: 9am
+Name:          Sam DeCook
+
+Requirements: Restate the problem specification in your own words.
+Implement a server and client program in C that communicates over a specific port number. The server should transform the data and send it back. The client should only run once while the server should run until quit (^C).
+
+
+Design: How did you attack the problem? What choices did you make and why?
+I didn't really have a problem to attack. I had most of the code already written for me. I just had to understand it, which was made a lot easier by the website, change a value, remove the while loop in the client, and transform the data. It was a pretty simple homework.
+
+
+Security Analysis: State the potential security vulnerabilities of your design.  How could these vulnerabilities be exploited and what would be the impact?  
+I'm not sure, we are only writing the data to a character string, it doesn't seem like there would be any way to exploit that.
+
+
+Implementation: Outline any interesting implementations details in your solution.
+For the data transform, I made all the letters lowercase before making the vowels uppercase. This made so I only have to check for lowercase vowels instead of both.
+
+
+Testing: Explain how you tested your program, enumerating the tests if possible. Explain why your test set was sufficient to believe the software is working properly.
+I tested the possibilities of upper and lowercase vowels and consonants, as well as numerals. All worked properly.
+
+
+Summary: Present your results. Did it work properly? Are there any limitations?
+The program worked properly with no limitations.
+
+
+Lessons Learned: List any lessons learned. What might have you done differently if you were going to solve this problem again?
+I became more familiar with how (comparatively) low-level C is. I don't think I would do anything differently, there isn't much to do different.

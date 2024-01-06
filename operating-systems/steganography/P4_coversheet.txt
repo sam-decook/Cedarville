@@ -1,0 +1,32 @@
+HW#:           4
+Class/Section: 9am
+Name:          Sam DeCook
+
+Requirements: Restate the problem specification in your own words.
+    Create a steganography command line tool that can encrypt text into and decrypt text from an image (using the LSBs).
+
+Design: How did you attack the problem? What choices did you make and why?
+    First, I parsed the input, then I came up with a general plan for the rest of my program.
+    That gave me an idea for the methods I would create.
+    Then I went through and implemented the encryption and decryption.
+
+Security Analysis: State the potential security vulnerabilities of your design.  How could these vulnerabilities be exploited and what would be the impact?  
+    There could be vulnerabilities with reading in user files (the original png and the input ASCII text file).
+    However, I'm just modifying the information, so I don't think that would be the main vulnerability.
+    Being a command line tool, there may be major vulnerabilities that come from malicious user input or manipulation of the shell.
+
+Implementation: Outline any interesting implementations details in your solution.
+    I split up the encryption and decryption into methods to make my main function more readable.
+    I used the recommended method of appending the length to the beginning of the file, except I used 2 bytes, 4 was overkill.
+    I also took advantage of the ability to cast an int 0-255 into a char.
+
+Testing: Explain how you tested your program, enumerating the tests if possible. Explain why your test set was sufficient to believe the software is working properly.
+    I simply ran the executable with the different command line parameter options. Each one worked, so I believe it is working.
+    I also tested each of the methods I created on my own with handcrafted data, and each performed properly.
+
+Summary: Present your results. Did it work properly? Are there any limitations?
+    My program works properly. The only "limitation" is the fact that it isn't a true Linux-style command line argument, you have to have the executable in the same folder as the files you are using.
+
+Lessons Learned: List any lessons learned. What might have you done differently if you were going to solve this problem again?
+    I learned about the bitset class, it is really useful!
+    I also once again learned that M1 Macs are a hindrance for CS applications, LodePNG wasn't linking and I had to finish my project on a lab computer.

@@ -1,0 +1,53 @@
+HW#:           3
+Class/Section: 9am
+Name:          Sam DeCook
+
+Requirements: Restate the problem specification in your own words.
+Implement a first-in first-out and least recently used page replacement algorithms.
+
+
+Design: How did you attack the problem? What choices did you make and why?
+We were advised to use an STL list, so I did.
+For FIFO, I pushed to the back and popped from the front because the first one in will always be at the front, since I remembered from Data Structures that was the most efficient way.
+For LRU, I used the same code with one change. If the page was already loaded, I removed it and added it back to the end of the list. This means that the page that hasn't been used for the longest will be at the front.
+
+
+Security Analysis: State the potential security vulnerabilities of your design.  How could these vulnerabilities be exploited and what would be the impact?  
+I don't see how there could be any security vulnerabilities from my code. It just manipulated numbers.
+
+
+Implementation: Outline any interesting implementations details in your solution.
+For LRU, I only had to add two lines of code, one to remove the page that was already in the list and another to put it in the back. This was far more efficient than implementing a counter.
+
+
+Testing: Explain how you tested your program, enumerating the tests if possible. Explain why your test set was sufficient to believe the software is working properly.
+I ran the test file with 1-10 page frames and looked at the results. They seemed to indicate that both algorithms were working. Also, these are pretty simple and short, so I don't think there are any errors.
+
+
+Summary: Present your results. Did it work properly? Are there any limitations?
+To the best of my knowledge, these algorithms are working properly. I'm not sure if there are any limitations, that would be more clearly seen if I was able to test it in an OS, so I could get real-life page requests, not simulated ones.
+
+
+Lessons Learned: List any lessons learned. What might have you done differently if you were going to solve this problem again?
+I initially started solving LRU by making a new class, Page, to keep track of the page number and the amount of time it had been since it was used. This required a lot more code and also resulted in a handful of errors that I couldn't understand. Prof. Dudenhofer said that I didn't need to make a new class, and so that made me consider if it would be possible to implement LRU without using a counter, and that lead me to realize I could just move existing pages to the back of the list. 
+I learned that I need to spend more time thinking about what data structure can be best used to solve the problem, and spend more time thinking about efficient implementations so I don't end up writing more code than necessary.
+
+
+
+Reference String: 0, 1, 2, 3, 1, 4, 5, 6, 1, 3, 4, 1, 5, 1, 6, 4, 3, 4, 6, 3, 5, 7, 3, 7, 8, 9, 8, 3, 9, 6, 9, 10, 3, 8, 9, 7, 6, 10, 9, 8, 9, 7, 10, 45, 37, 38, 45, 39, 37, 41, 38, 42, 37, 31, 35, 38, 32, 37, 35, 32, 38, 31, 40, 31, 35, 31, 40, 38, 32, 40, 36, 41, 42, 35, 30, 20, 23, 20, 21, 22, 24, 20, 25, 21, 23, 27, 22, 20, 21, 26, 19, 22, 28, 23, 21, 24, 26, 21, 23, 22
+		
+Page	   Faults	
+Frames	 FIFO	LRU	 Difference
+-------------------------------------
+1	|100	100	|0
+2	|91	91	|0
+3	|79	80	|-1
+4	|71	66	|5
+5	|54	48	|6
+6	|45	40	|5
+7	|43	38	|5
+8	|36	36	|0
+9	|33	34	|-1
+10	|33	33	|0
+
+From the table, you can see that for 1-3 and 8-10 page frames, FIFO and LRU performed the same. This makes sense, 1-3 frames is too small for any benefits from LRU to show. They are similar for 8-10 frames because when I made the reference string I kept the "working set" within a 10 page difference. That means that with 9-10 frames, the only page faults occur when the working set changes. You can see the benefit of LRU when it has 4-7 page frames available since it can keep the frames that are being used. I think you would be able to see a bigger difference if my reference string was longer and if the working sets were longer.

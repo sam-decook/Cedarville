@@ -1,0 +1,30 @@
+HW#: 1
+Class/Section: CS 3310 OS - 9am MWF
+Name: Sam DeCook
+
+Requirements: Restate the problem specification in your own words.
+Translate from C to C++ program code that demonstrates a solution to the producer-consumer problem.
+
+
+Design: How did you attack the problem? What choices did you make and why?
+I just used the libraries provided to create the same functionality in C++.
+
+
+Security Analysis: State the potential security vulnerabilities of your design.  How could these vulnerabilities be exploited and what would be the impact?  
+I don't see that I have created any additional security vulnerabilities with my design.
+
+
+Implementation: Outline any interesting implementations details in your solution.
+For the wait conditions, I created a new variable ind, so I could check if the buffer was full or empty. I also didn't overwrite the buffer.
+
+
+Testing: Explain how you tested your program, enumerating the tests if possible. Explain why your test set was sufficient to believe the software is working properly.
+I ran it and made sure that the letters went on and came off in the right order and were random. It matched the example code provided.
+
+
+Summary: Present your results. Did it work properly? Are there any limitations?
+The program works properly.
+
+
+Lessons Learned: List any lessons learned. What might have you done differently if you were going to solve this problem again?
+I spent too much time copying the code over to my editor. This project didn't take very long and so I didn't need to do that.
